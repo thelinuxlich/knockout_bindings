@@ -40,6 +40,46 @@ ko.bindingHandlers.jqAccordion = {
         $(element).accordion('destroy').accordion(options);
     }
 };
+/** Binding para habilitar multiselect */
+ko.bindingHandlers.jqMultiSelect = {
+    init: function(element, valueAccessor,allBindingsAccessor,viewModel) {
+        var defaults = {
+            click: function(event,ui) {
+                var selected_options = $.map($(element).multiselect("getChecked"),function(a) {return $(a).val()});
+                allBindingsAccessor()['selectedOptions'](selected_options);
+            }
+        };
+        var options = $.extend(defaults,valueAccessor());
+        allBindingsAccessor()['options'].subscribe(function(value) {
+            ko.bindingHandlers.jqMultiSelect.regenerateMultiselect(element,options,viewModel);
+        });
+        allBindingsAccessor()['selectedOptions'].subscribe(function(value) {
+            ko.bindingHandlers.jqMultiSelect.regenerateMultiselect(element,options,viewModel);
+        });
+    },
+    regenerateMultiselect: function(element,options,viewModel) {
+        if($(element).next().hasClass("ui-multiselect")) {
+            setTimeout(function() {
+                return $(element).multiselect("refresh").multiselectfilter({
+                        label: options['filterLabel'] || "Search: "
+                    });;
+            }, 0);
+        } else {
+            setTimeout(function() {
+                if(options['filter'] === true) {
+                    $(element).multiselect(options).multiselectfilter({
+                        label: options['filterLabel'] || "Search: "
+                    });
+                } else {
+                    $(element).multiselect(options);
+                }
+                if(options['noChecks'] === true) {
+                    $(element).next().next().find(".ui-helper-reset:first").remove();
+                }
+            },0);
+        }
+    }
+};
 /** Binding para executar validação em um formulário */
 ko.bindingHandlers.jqValidate = {
     init: function(element, valueAccessor) {
