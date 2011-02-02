@@ -3,10 +3,13 @@
 */
 ko.bindingHandlers.valueWithAutoValidation = {
   init: ko.bindingHandlers.value.init,
-  update: function(element) {
+  update: function(element,valueAccessor,allBindingsAccessor) {
     ko.bindingHandlers.value.update.apply(this, arguments);
     if(element.form)
-     $(element).valid();
+      if(allBindingsAccessor()["validationObserver"] !== undefined)
+        allBindingsAccessor()["validationObserver"]($(element).valid());
+      else
+        $(element).valid();
   }
 };
 
