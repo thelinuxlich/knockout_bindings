@@ -1,4 +1,6 @@
-/** Binding para validar o valor antes de aplicá-lo */
+/** Binding for inline validation - jQuery Validation Plugin
+ *  http://bassistance.de/jquery-plugins/jquery-plugin-validation/
+*/
 ko.bindingHandlers.valueWithAutoValidation = {
   init: ko.bindingHandlers.value.init,
   update: function(element) {
@@ -7,7 +9,20 @@ ko.bindingHandlers.valueWithAutoValidation = {
      $(element).valid();
   }
 };
-/** Binding para criar uma máscara no campo */
+
+/** Binding for form validation - jQuery Validation Plugin
+ *  http://bassistance.de/jquery-plugins/jquery-plugin-validation/
+*/
+ko.bindingHandlers.jqValidate = {
+    init: function(element, valueAccessor) {
+	    var options = valueAccessor();
+	    $(element).validate(options);
+    }
+};
+
+/** Binding for adding a mask to input fields - jQuery Masked Input Plugin
+ *  http://digitalbush.com/projects/masked-input-plugin/
+*/
 ko.bindingHandlers.mask = {
   init: function(element, valueAccessor) {
 	var options = valueAccessor();
@@ -19,14 +34,20 @@ ko.bindingHandlers.mask = {
 	$(element).mask(mask);
   }
 };
-/** Binding para estilizar botões */
+
+/** Binding for stylized buttons - jQuery UI Button Widget
+ *  http://jqueryui.com/demos/button/
+*/
 ko.bindingHandlers.jqButton = {
     init: function(element, valueAccessor) {
 	    var options = valueAccessor();
 	    $(element).button(options);
     }
 };
-/** Binding para habilitar acordeão */
+
+/** Binding for accordion widget - jQuery UI Accordion Widget
+ *  http://jqueryui.com/demos/accordion/
+*/
 ko.bindingHandlers.jqAccordion = {
     init: function(element, valueAccessor) {
         var options = valueAccessor();
@@ -40,7 +61,10 @@ ko.bindingHandlers.jqAccordion = {
         $(element).accordion('destroy').accordion(options);
     }
 };
-/** Binding para habilitar multiselect */
+
+/** Binding for adding stylized and rich multiselect - jQuery UI MultiSelect Widget
+ *  http://www.erichynds.com/jquery/jquery-ui-multiselect-widget/
+*/
 ko.bindingHandlers.jqMultiSelect = {
     init: function(element, valueAccessor,allBindingsAccessor,viewModel) {
         var defaults = {
@@ -80,14 +104,10 @@ ko.bindingHandlers.jqMultiSelect = {
         }
     }
 };
-/** Binding para executar validação em um formulário */
-ko.bindingHandlers.jqValidate = {
-    init: function(element, valueAccessor) {
-	    var options = valueAccessor();
-	    $(element).validate(options);
-    }
-};
-/** Binding para criar janelas de diálogo */
+
+/** Binding for window dialogs - jQuery UI Dialog Widget
+ *  http://jqueryui.com/demos/dialog/
+*/
 ko.bindingHandlers.jqDialog = {
     init: function(element, valueAccessor) {
         var defaults = {
