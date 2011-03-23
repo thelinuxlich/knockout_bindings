@@ -5,11 +5,9 @@ ko.bindingHandlers.valueWithAutoValidation = {
   init: ko.bindingHandlers.value.init,
   update: function(element,valueAccessor,allBindingsAccessor) {
     ko.bindingHandlers.value.update.apply(this, arguments);
-    if(element.form)
-      if(allBindingsAccessor()["validationObserver"] !== undefined)
-        allBindingsAccessor()["validationObserver"]($(element).valid());
-      else
-        $(element).valid();
+    $(element).valid();
+    var form = $(element.form);
+    form.trigger('invalid-form.validate',[form.data("validator")]);
   }
 };
 
@@ -34,8 +32,29 @@ ko.bindingHandlers.mask = {
 	    mask = "99/99/9999";
 	else if(options === "time")
 	    mask = "99:99";
+	else if(options === "cpf")
+	    mask = "999.999.999-99";
+	else if(options === "phone")
+	    mask = "(99) 9999-9999";
 	$(element).mask(mask);
   }
+};
+
+/** Binding to make content appear with 'fade' effect */
+ko.bindingHandlers['fadeIn'] = {
+    'update': function(element, valueAccessor) {
+        var options = valueAccessor();
+        if(options() === true)
+          $(element).fadeIn('slow');
+    }
+};
+/** Binding to make content disappear with 'fade' effect */
+ko.bindingHandlers['fadeOut'] = {
+    'update': function(element, valueAccessor) {
+        var options = valueAccessor();
+        if(options() === true)
+          $(element).fadeOut('slow');
+    }
 };
 
 /** Binding for stylized buttons - jQuery UI Button Widget
@@ -47,6 +66,47 @@ ko.bindingHandlers.jqButton = {
 	    $(element).button(options);
     }
 };
+
+/**
+ * Binding for jQuery Datatables
+ * http://datatables.net
+*/
+ko.bindingHandlers.dataTable = {
+  init: function(element, valueAccessor) {
+    var options = valueAccessor();
+    var defaults = {
+        "aaData": options["data"](),
+        "bJQueryUI": true,
+        "bFilter": true,
+        "bAutoWidth": false,
+        "bLengthChange": false,
+        "bSortClasses": false,
+        "bRetrieve": true,
+        "fnRowCallback": function(nRow, aData, iDisplayIndex) {
+            $(nRow).mouseover(function(){
+              $(nRow).attr("style","background-color:yellow !important;");
+            });
+            $(nRow).mouseout(function() {
+              $(nRow).removeAttr("style");
+            });
+            if(typeof options["rowClick"] === "function") {
+              $(nRow).click(function() {
+                options["rowClick"](aData);
+              });
+            }
+            return nRow;
+        }
+    }
+    var tableOptions = $.extend(defaults,options["options"]);
+    options["object"]($(element).dataTable(tableOptions).css("width","99.5%"));
+  },
+  update: function(element,valueAccessor) {
+    var options = valueAccessor();
+    options["object"]().fnClearTable();
+    options["object"]().fnAddData(options["data"](),true);
+  }
+};
+
 
 /** Binding for accordion widget - jQuery UI Accordion Widget
  *  http://jqueryui.com/demos/accordion/
