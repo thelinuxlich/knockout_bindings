@@ -36,6 +36,8 @@ ko.bindingHandlers.mask = {
 	    mask = "999.999.999-99";
 	else if(options === "phone")
 	    mask = "(99) 9999-9999";
+	else if(options === "cep")
+	    mask = "99999-999";
 	$(element).mask(mask);
   }
 };
@@ -80,8 +82,8 @@ ko.bindingHandlers.dataTable = {
         "bFilter": true,
         "bAutoWidth": false,
         "bLengthChange": false,
-        "bSortClasses": false,
         "bRetrieve": true,
+        "bSortClasses": false,
         "fnRowCallback": function(nRow, aData, iDisplayIndex) {
             $(nRow).mouseover(function(){
               $(nRow).attr("style","background-color:yellow !important;");
@@ -90,12 +92,13 @@ ko.bindingHandlers.dataTable = {
               $(nRow).removeAttr("style");
             });
             if(typeof options["rowClick"] === "function") {
-              $(nRow).click(function() {
+              $(nRow).unbind('click').click(function() {
                 options["rowClick"](aData);
               });
             }
             return nRow;
-        }
+        },
+        "oLanguage": TABLE_LANGUAGE
     }
     var tableOptions = $.extend(defaults,options["options"]);
     options["object"]($(element).dataTable(tableOptions).css("width","99.5%"));
@@ -107,6 +110,19 @@ ko.bindingHandlers.dataTable = {
   }
 };
 
+/** Binding for stylized tabs - jQuery UI Tabs Widget
+ *  http://jqueryui.com/demos/tabs/
+*/
+ko.bindingHandlers.jqTabs = {
+    init: function(element, valueAccessor) {
+	    var options = valueAccessor();
+	    $(element).tabs(ko.utils.unwrapObservable(options));
+    },
+    update: function(element,valueAccessor) {
+        var options = valueAccessor();
+        $(element).tabs('option',ko.utils.unwrapObservable(options));
+    }
+};
 
 /** Binding for accordion widget - jQuery UI Accordion Widget
  *  http://jqueryui.com/demos/accordion/
