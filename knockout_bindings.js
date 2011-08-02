@@ -124,16 +124,25 @@ ko.bindingHandlers.jqTabs = {
     }
 };
 
+/** Binding for strict MVVM use, associating an observable with the jQuery object of the element */
+ko.bindingHandlers.jqElement = {
+    init: function(element, valueAccessor) {
+          var options = valueAccessor();
+          options($(element));
+    }
+}
+
 /** Binding for accordion widget - jQuery UI Accordion Widget
  *  http://jqueryui.com/demos/accordion/
 */
 ko.bindingHandlers.jqAccordion = {
     init: function(element, valueAccessor) {
         var options = valueAccessor();
-	    $(element).accordion(options);
-	    $(element).bind("valueChanged",function(){
-	       ko.bindingHandlers.jqAccordion.update(element,valueAccessor);
-	    });
+        var jqElement = $(element);
+        jqElement.accordion(options);
+        jqElement.bind("valueChanged",function(){
+           ko.bindingHandlers.jqAccordion.update(element,valueAccessor);
+        });
     },
     update: function(element,valueAccessor) {
         var options = valueAccessor();
